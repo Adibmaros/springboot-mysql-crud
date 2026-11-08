@@ -4,16 +4,17 @@ import com.crud.belajar.dto.ApiResponse;
 import com.crud.belajar.dto.ProductRequest;
 import com.crud.belajar.model.Product;
 import com.crud.belajar.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/products")
+@Tag(name = "Product", description = "Endpoint untuk manajemen CRUD data produk")
 public class ProductController {
 
     private final ProductService productService;
@@ -23,11 +24,8 @@ public class ProductController {
     }
 
     // [GET] Ambil data produk (Mendukung Search, Pagination, dan Sorting)
-    // Contoh pemanggilan:
-    // - GET http://localhost:8080/api/products
-    // - GET http://localhost:8080/api/products?search=asus
-    // - GET http://localhost:8080/api/products?page=0&size=5&sortBy=price&sortDir=desc
     @GetMapping
+    @Operation(summary = "Ambil semua produk", description = "Mengambil data produk dengan dukungan pencarian nama, paginasi, dan pengurutan dinamis.")
     public ResponseEntity<ApiResponse<Page<Product>>> getProducts(
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
@@ -39,16 +37,16 @@ public class ProductController {
     }
 
     // [GET] Ambil detail produk berdasarkan ID
-    // Endpoint: GET http://localhost:8080/api/products/{id}
     @GetMapping("/{id}")
+    @Operation(summary = "Ambil detail produk", description = "Mengambil data satu produk berdasarkan ID.")
     public ResponseEntity<ApiResponse<Product>> getProductById(@PathVariable Long id) {
         Product product = productService.getProductById(id);
         return ResponseEntity.ok(ApiResponse.success("Berhasil mengambil detail produk", product));
     }
 
     // [POST] Tambah produk baru (dengan validasi input)
-    // Endpoint: POST http://localhost:8080/api/products
     @PostMapping
+    @Operation(summary = "Tambah produk baru", description = "Menyimpan produk baru ke database dengan validasi nama, harga, dan stok.")
     public ResponseEntity<ApiResponse<Product>> createProduct(@Valid @RequestBody ProductRequest request) {
         Product createdProduct = productService.createProduct(request);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -56,8 +54,8 @@ public class ProductController {
     }
 
     // [PUT] Update produk berdasarkan ID
-    // Endpoint: PUT http://localhost:8080/api/products/{id}
     @PutMapping("/{id}")
+    @Operation(summary = "Perbarui produk", description = "Mengubah data produk yang sudah ada berdasarkan ID.")
     public ResponseEntity<ApiResponse<Product>> updateProduct(
             @PathVariable Long id,
             @Valid @RequestBody ProductRequest request) {
@@ -66,8 +64,8 @@ public class ProductController {
     }
 
     // [DELETE] Hapus produk berdasarkan ID
-    // Endpoint: DELETE http://localhost:8080/api/products/{id}
     @DeleteMapping("/{id}")
+    @Operation(summary = "Hapus produk", description = "Menghapus data produk dari database berdasarkan ID.")
     public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok(ApiResponse.success("Produk dengan ID " + id + " berhasil dihapus", null));

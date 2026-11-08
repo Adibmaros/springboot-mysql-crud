@@ -15,6 +15,7 @@ Proyek ini telah menerapkan standar *best practices* arsitektur berlapis (*layer
   * **Spring Data JPA**: Mempermudah interaksi database menggunakan Hibernate ORM.
   * **MySQL Driver**: Konektor JDBC untuk database MySQL.
   * **Validation (Hibernate Validator)**: Validasi data payload request menggunakan anotasi standar Java Bean Validation.
+  * **Springdoc OpenAPI (Swagger UI)**: Dokumentasi interaktif dan visualisasi RESTful API berbasis browser.
 * **Build Tool**: Apache Maven (Maven Wrapper disertakan)
 
 ---
@@ -215,6 +216,15 @@ Jika mengirimkan data tidak valid (misal nama kosong dan harga negatif):
 
 ---
 
+## 📖 Dokumentasi Interaktif (Swagger UI)
+
+Proyek ini telah dilengkapi dengan antarmuka web interaktif **Swagger UI (OpenAPI 3)**. Kamu bisa langsung melihat semua endpoint, skema request/response DTO, serta melakukan uji coba (klik tombol **"Try it out"**) langsung dari web browser tanpa aplikasi tambahan!
+
+* **URL Swagger UI**: `http://localhost:8080/swagger-ui.html`
+* **URL OpenAPI JSON**: `http://localhost:8080/api-docs`
+
+---
+
 ## 📑 File Pengujian Cepat (`api-test.http`)
 
 Proyek ini telah dilengkapi file pengujian siap pakai: [`api-test.http`](api-test.http).  
@@ -225,9 +235,9 @@ Jika kamu menggunakan **Antigravity / VS Code** dengan ekstensi **REST Client**,
 ## 🗺️ Roadmap Selanjutnya (Next Steps)
 
 Proyek ini sengaja dibuat tanpa autentikasi sebagai dasar pembelajaran CRUD. Tahap pengembangan berikutnya:
+- [x] Dokumentasi Interaktif menggunakan **Swagger / OpenAPI (springdoc-openapi)**.
 - [ ] Integrasi Autentikasi & Otorisasi (**Spring Security + JWT Token**).
 - [ ] Manajemen Akun & Hak Akses User/Admin (Role-Based Access Control).
-- [ ] Dokumentasi Interaktif menggunakan **Swagger / OpenAPI (springdoc-openapi)**.
 - [ ] Penulisan Unit Test dan Integration Test (**JUnit 5 & Mockito / MockMvc**).
 - [ ] Containerization menggunakan **Docker & Docker Compose**.
 
