@@ -1,0 +1,57 @@
+### ========================================================
+### PENGUJIAN API CRUD PRODUK (SPRING BOOT)
+### Jika di Antigravity terpasang ekstensi "REST Client", 
+### kamu bisa langsung klik tombol "Send Request" di atas setiap URL.
+### ========================================================
+
+@baseUrl = http://localhost:8080/api/products
+
+### 1. Ambil Semua Data Produk (Default: Halaman 1, 10 item)
+GET {{baseUrl}}
+
+### 2. Ambil Data dengan Fitur Pencarian (Search by Name)
+GET {{baseUrl}}?search=macbook
+
+### 3. Ambil Data dengan Pagination & Sorting (Harga Termahal ke Termurah)
+GET {{baseUrl}}?page=0&size=2&sortBy=price&sortDir=desc
+
+### 4. Ambil Detail 1 Produk Berdasarkan ID
+GET {{baseUrl}}/1
+
+### 5. Tambah Produk Baru (Berhasil / Valid)
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "name": "Headset Sony WH-1000XM5",
+  "price": 4999000.0,
+  "stock": 15,
+  "description": "Headphone wireless dengan noise cancelling terbaik"
+}
+
+### 6. Uji Coba Error Validasi (Nama kosong & Harga negatif)
+### Harusnya mengembalikan status 400 Bad Request dengan pesan error rapi
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "name": "",
+  "price": -50000.0,
+  "stock": -2,
+  "description": "Testing validasi gagal"
+}
+
+### 7. Update Produk Berdasarkan ID
+PUT {{baseUrl}}/1
+Content-Type: application/json
+
+{
+  "name": "Laptop Asus TUF Gaming A15 (Updated)",
+  "price": 14999000.0,
+  "stock": 12,
+  "description": "Spesifikasi di-upgrade ke RAM 16GB"
+}
+
+### 8. Hapus Produk Berdasarkan ID
+DELETE {{baseUrl}}/1
+
