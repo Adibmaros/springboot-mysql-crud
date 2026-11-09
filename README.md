@@ -324,6 +324,8 @@ Jika kamu menggunakan **Antigravity / VS Code** dengan ekstensi **REST Client**,
 
 ## 🗺️ Status Pengembangan (Roadmap)
 
+> 💡 **Panduan Bedah Internal Dependensi**: Untuk memahami cara kerja di balik layar (*under the hood*) dari setiap dependensi beserta komparasi konsepnya dengan Golang, silakan baca: **[`ROADMAP_DEEP_DIVE_DEPENDENCIES.md`](ROADMAP_DEEP_DIVE_DEPENDENCIES.md)**.
+
 ### ✅ Milestone Selesai (Completed)
 - [x] **Dokumentasi Interaktif**: Integrasi Swagger UI (OpenAPI 3) dengan fitur *Authorize Bearer JWT*.
 - [x] **Relasi Antar Tabel Basis Data**: Pemetaan *One-to-Many* dan *Many-to-One* antara entitas `User` dan `Product`.
