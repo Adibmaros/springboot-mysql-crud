@@ -7,6 +7,7 @@
 @baseUrl = http://localhost:8080/api/products
 @userUrl = http://localhost:8080/api/users
 @authUrl = http://localhost:8080/api/auth
+@actuatorUrl = http://localhost:8080/actuator
 
 # Token otomatis diambil dari respon login request # @name loginUser di bawah
 @authToken = {{loginUser.response.body.data.token}}
@@ -140,3 +141,21 @@ Content-Type: application/json
 ### P8. Hapus Produk Berdasarkan ID (PROTECTED - Perlu Token JWT)
 DELETE {{baseUrl}}/1
 Authorization: Bearer {{loginUser.response.body.data.token}}
+
+
+### ========================================================
+### 4. MONITORING SERVER (SPRING BOOT ACTUATOR)
+### ========================================================
+
+### M1. Cek Kesehatan Sistem & Koneksi Database MySQL
+GET {{actuatorUrl}}/health
+
+### M2. Cek Informasi Aplikasi
+GET {{actuatorUrl}}/info
+
+### M3. Daftar Metrik Server yang Tersedia
+GET {{actuatorUrl}}/metrics
+
+### M4. Cek Penggunaan Memori JVM
+GET {{actuatorUrl}}/metrics/jvm.memory.used
+

@@ -14,3 +14,4 @@ CREATE TABLE IF NOT EXISTS products (
     updated_at DATETIME NOT NULL,
     CONSTRAINT fk_products_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
+

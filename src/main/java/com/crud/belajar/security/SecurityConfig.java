@@ -55,6 +55,9 @@ public class SecurityConfig {
                                 "/webjars/**")
                         .permitAll()
 
+                        // 3. Actuator (Health, Info, Metrics) terbuka untuk monitoring
+                        .requestMatchers("/actuator/**").permitAll()
+
                         // 3. GET Produk terbuka untuk umum (pengunjung web bisa lihat katalog tanpa
                         // login)
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()

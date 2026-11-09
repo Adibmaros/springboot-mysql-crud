@@ -20,6 +20,8 @@ Proyek ini dibangun menggunakan **Java 17** dan ekosistem **Spring Boot** dengan
 | **`flyway-core` & `flyway-mysql`** | Database Migration | Manajemen versi struktur database (*Database Migration / Version Control*). Menjalankan skrip SQL berurut (`V1__`, `V2__`) dan melacak riwayat perubahan skema. |
 | **`spring-boot-starter-validation`** | Validasi Input | Memvalidasi integritas data payload request JSON menggunakan anotasi standar Java Bean Validation (`@NotBlank`, `@Email`, `@Min`, `@NotNull`). |
 | **`springdoc-openapi-starter-webmvc-ui`** | Dokumentasi API | Meng-generate visualisasi dokumentasi interaktif Swagger UI (OpenAPI 3) berbasis browser dengan dukungan *Authorize Bearer JWT*. |
+| **`spring-boot-starter-actuator`** | Observability / Monitoring | Menyediakan endpoint bawaan untuk memantau kesehatan server (`/health`), koneksi database MySQL, metrik penggunaan memori JVM, dan status aplikasi. |
+| **`spring-boot-devtools`** | Developer Productivity | Meningkatkan kenyamanan *development* dengan fitur *Automatic Restart* (LiveReload) ketika berkas kode Java disimpan (`Ctrl + S`). |
 | **`lombok`** | Developer Tool | Menghilangkan penulisan kode berulang (*boilerplate code*) dengan men-generate otomatis getter, setter, dan constructor pada tahap kompilasi. |
 | **`spring-boot-starter-test`** | Pengujian | Framework pengujian unit dan integrasi (JUnit 5, Mockito, Spring TestContext). |
 
@@ -116,6 +118,10 @@ src/main/resources/
 11. **Database Migration Berversi (Flyway)**:
    * Struktur dan perubahan skema database dikelola melalui skrip SQL terversi (`V1__...`, `V2__...`).
    * Hibernate disetel ke mode `validate`, mencegah manipulasi skema liar dan memastikan kepatuhan standar *production*.
+12. **Monitoring Kesehatan & Metrik Sistem (Spring Boot Actuator)**:
+   * Endpoint siap pakai untuk memeriksa status kesehatan server & MySQL (`/actuator/health`) serta metrik penggunaan memori JVM (`/actuator/metrics`).
+13. **Pengalaman Developer Cepat (Spring Boot DevTools)**:
+   * Fitur *LiveReload* dan *Automatic Restart* saat kode diubah tanpa mematikan server secara manual.
 
 ---
 
@@ -213,6 +219,14 @@ Aplikasi akan aktif di: `http://localhost:8080`.
 | **POST** | `/api/users` | Tambah user baru | Bearer Token |
 | **PUT** | `/api/users/{id}` | Perbarui data nama/email user | Bearer Token |
 | **DELETE** | `/api/users/{id}` | Hapus user (otomatis menghapus produk miliknya via *cascade*) | Bearer Token |
+
+### 4. Monitoring Server (`/actuator`) — Publik / Observability
+| Method | Endpoint | Deskripsi | Akses |
+| :--- | :--- | :--- | :--- |
+| **GET** | `/actuator/health` | Cek status kesehatan aplikasi & database MySQL (UP / DOWN) | Publik |
+| **GET** | `/actuator/info` | Informasi lingkungan aplikasi | Publik |
+| **GET** | `/actuator/metrics` | Daftar metrik sistem yang dapat dipantau | Publik |
+| **GET** | `/actuator/metrics/{name}` | Cek metrik spesifik (misal `/actuator/metrics/jvm.memory.used`) | Publik |
 
 ---
 
@@ -315,6 +329,8 @@ Jika kamu menggunakan **Antigravity / VS Code** dengan ekstensi **REST Client**,
 - [x] Integrasi Autentikasi & Otorisasi (**Spring Security 6 + Stateless JWT Token**).
 - [x] Pengurangan Boilerplate Code menggunakan **Project Lombok** (`@Getter`, `@Setter`, `@NoArgsConstructor`).
 - [x] Manajemen Skema Basis Data Berversi (**Flyway Database Migration**).
+- [x] Observability & Health Check Monitoring (**Spring Boot Actuator**).
+- [x] Produktivitas Developer & Auto-Restart (**Spring Boot DevTools**).
 - [ ] Penulisan Unit Test dan Integration Test (**JUnit 5 & Mockito / MockMvc**).
 - [ ] Containerization menggunakan **Docker & Docker Compose**.
 
