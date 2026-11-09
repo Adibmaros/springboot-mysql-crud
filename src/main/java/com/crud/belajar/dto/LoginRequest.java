@@ -24,3 +24,4 @@ public class LoginRequest {
     @Schema(description = "Kata sandi akun", example = "password123")
     private String password;
 }
+

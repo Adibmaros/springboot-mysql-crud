@@ -46,3 +46,4 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.success("Berhasil mengambil data profil user", user));
     }
 }
+
