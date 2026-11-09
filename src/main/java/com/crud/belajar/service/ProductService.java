@@ -2,7 +2,9 @@ package com.crud.belajar.service;
 
 import com.crud.belajar.dto.ProductRequest;
 import com.crud.belajar.model.Product;
+import com.crud.belajar.model.User;
 import com.crud.belajar.repository.ProductRepository;
+import com.crud.belajar.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,16 +13,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-
 @Service
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     // Dependency Injection via Constructor
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, UserRepository userRepository) {
         this.productRepository = productRepository;
+        this.userRepository = userRepository;
     }
 
     // 1. Ambil data produk dengan fitur Pagination, Sorting, dan Search
@@ -48,6 +50,13 @@ public class ProductService {
         product.setStock(request.getStock());
         product.setDescription(request.getDescription());
 
+        // Hubungkan ke User jika userId dikirimkan
+        if (request.getUserId() != null) {
+            User user = userRepository.findById(request.getUserId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User dengan ID " + request.getUserId() + " tidak ditemukan"));
+            product.setUser(user);
+        }
+
         return productRepository.save(product);
     }
 
@@ -60,6 +69,13 @@ public class ProductService {
         product.setStock(request.getStock());
         product.setDescription(request.getDescription());
 
+        // Hubungkan ke User baru jika userId dikirimkan
+        if (request.getUserId() != null) {
+            User user = userRepository.findById(request.getUserId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User dengan ID " + request.getUserId() + " tidak ditemukan"));
+            product.setUser(user);
+        }
+
         return productRepository.save(product);
     }
 
@@ -69,4 +85,3 @@ public class ProductService {
         productRepository.delete(product);
     }
 }
-

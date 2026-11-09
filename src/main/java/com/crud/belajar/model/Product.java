@@ -1,5 +1,6 @@
 package com.crud.belajar.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,13 @@ public class Product {
 
     private String description;
 
+    // Relasi Many-to-One: Banyak produk dimiliki oleh 1 User
+    // Foreign key di tabel database adalah 'user_id'
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"products", "hibernateLazyInitializer", "handler"})
+    private User user;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -40,11 +48,20 @@ public class Product {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    // Parameterized constructor (digunakan untuk kemudahan inisialisasi di DataSeeder)
+    // Parameterized constructor (tanpa user)
     public Product(String name, Double price, Integer stock, String description) {
         this.name = name;
         this.price = price;
         this.stock = stock;
         this.description = description;
+    }
+
+    // Parameterized constructor (lengkap dengan user)
+    public Product(String name, Double price, Integer stock, String description, User user) {
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+        this.description = description;
+        this.user = user;
     }
 }

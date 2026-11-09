@@ -30,9 +30,11 @@ src/main/java/com/crud/belajar/
 ├── BelajarApplication.java        # Main class aplikasi (@SpringBootApplication, @EnableJpaAuditing)
 │
 ├── model/
-│   └── Product.java               # Entity JPA: Pemetaan tabel 'products' & audit timestamp
+│   ├── User.java                  # Entity JPA: Pemetaan tabel 'users' (1 User punya banyak Produk)
+│   └── Product.java               # Entity JPA: Pemetaan tabel 'products' & relasi @ManyToOne ke User
 │
 ├── repository/
+│   ├── UserRepository.java        # Data Access Layer untuk User
 │   └── ProductRepository.java     # Data Access Layer: Query JPA & pencarian (extends JpaRepository)
 │
 ├── dto/
@@ -77,7 +79,9 @@ src/main/java/com/crud/belajar/
 7. **JPA Auditing**:
    * Kolom `createdAt` dan `updatedAt` otomatis terisi saat data dibuat atau dimodifikasi.
 8. **Automated Data Seeder**:
-   * Saat pertama kali dijalankan, sistem otomatis memasukkan 5 data dummy produk jika tabel kosong.
+   * Saat pertama kali dijalankan, sistem otomatis memasukkan 1 user dummy dan 5 data dummy produk yang saling terhubung jika database kosong.
+9. **Relasi Database JPA (One-to-Many & Many-to-One)**:
+   * Mengintegrasikan relasi antara entitas `User` dan `Product` (1 User dapat memiliki banyak Produk) menggunakan foreign key `user_id`.
 
 ---
 

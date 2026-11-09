@@ -18,7 +18,7 @@ GET {{baseUrl}}?page=0&size=2&sortBy=price&sortDir=desc
 ### 4. Ambil Detail 1 Produk Berdasarkan ID
 GET {{baseUrl}}/1
 
-### 5. Tambah Produk Baru (Berhasil / Valid)
+### 5. Tambah Produk Baru (Berhasil / Valid terhubung ke User)
 POST {{baseUrl}}
 Content-Type: application/json
 
@@ -26,7 +26,8 @@ Content-Type: application/json
   "name": "Headset Sony WH-1000XM5",
   "price": 4999000.0,
   "stock": 15,
-  "description": "Headphone wireless dengan noise cancelling terbaik"
+  "description": "Headphone wireless dengan noise cancelling terbaik",
+  "userId": 1
 }
 
 ### 6. Uji Coba Error Validasi (Nama kosong & Harga negatif)
