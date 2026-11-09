@@ -19,14 +19,16 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
+    public void commence(HttpServletRequest request, HttpServletResponse response,
+            AuthenticationException authException)
             throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         Map<String, Object> body = new HashMap<>();
         body.put("success", false);
-        body.put("message", "Akses ditolak: Autentikasi JWT diperlukan atau token tidak valid (" + authException.getMessage() + ")");
+        body.put("message", "Akses ditolak: Autentikasi JWT diperlukan atau token tidak valid ("
+                + authException.getMessage() + ")");
         body.put("data", null);
         body.put("timestamp", LocalDateTime.now().toString());
 

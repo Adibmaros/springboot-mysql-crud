@@ -154,6 +154,10 @@ spring.datasource.password=isi_password_mysql_kamu_disini
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
+
+# Konfigurasi JWT (JSON Web Token)
+jwt.secret=belajarCrudSpringBootSecretKeyMustBeAtLeast256BitsLongForHMACSHA256Security1234567890
+jwt.expiration-ms=86400000
 ```
 
 ### 4. Jalankan Aplikasi
@@ -175,13 +179,30 @@ Aplikasi akan aktif di: `http://localhost:8080`.
 
 ## 📡 Dokumentasi Endpoint API
 
-| Method | Endpoint | Deskripsi | Query Parameters (Opsional) |
+### 1. Autentikasi (`/api/auth`) — Publik
+| Method | Endpoint | Deskripsi | Akses |
 | :--- | :--- | :--- | :--- |
-| **GET** | `/api/products` | Ambil semua produk (Paging & Sort) | `page`, `size`, `sortBy`, `sortDir`, `search` |
-| **GET** | `/api/products/{id}` | Ambil detail satu produk | - |
-| **POST** | `/api/products` | Tambah produk baru | - |
-| **PUT** | `/api/products/{id}` | Perbarui data produk | - |
-| **DELETE** | `/api/products/{id}` | Hapus data produk | - |
+| **POST** | `/api/auth/register` | Mendaftarkan akun user baru & langsung mendapatkan token JWT | Publik |
+| **POST** | `/api/auth/login` | Login menggunakan email & password untuk memperoleh token JWT | Publik |
+| **GET** | `/api/auth/me` | Mengambil detail profil user yang sedang aktif berdasarkan token | Bearer Token |
+
+### 2. Manajemen Produk (`/api/products`)
+| Method | Endpoint | Deskripsi | Akses |
+| :--- | :--- | :--- | :--- |
+| **GET** | `/api/products` | Ambil semua produk (Mendukung `page`, `size`, `sortBy`, `sortDir`, `search`) | Publik |
+| **GET** | `/api/products/{id}` | Ambil detail satu produk | Publik |
+| **POST** | `/api/products` | Tambah produk baru (bisa menautkan `userId`) | Bearer Token |
+| **PUT** | `/api/products/{id}` | Perbarui data produk | Bearer Token |
+| **DELETE** | `/api/products/{id}` | Hapus data produk | Bearer Token |
+
+### 3. Manajemen User (`/api/users`) — Terproteksi
+| Method | Endpoint | Deskripsi | Akses |
+| :--- | :--- | :--- | :--- |
+| **GET** | `/api/users` | Ambil semua user beserta daftar produk miliknya | Bearer Token |
+| **GET** | `/api/users/{id}` | Ambil detail satu user dan daftar produknya | Bearer Token |
+| **POST** | `/api/users` | Tambah user baru | Bearer Token |
+| **PUT** | `/api/users/{id}` | Perbarui data nama/email user | Bearer Token |
+| **DELETE** | `/api/users/{id}` | Hapus user (otomatis menghapus produk miliknya via *cascade*) | Bearer Token |
 
 ---
 
@@ -256,26 +277,33 @@ Jika mengirimkan data tidak valid (misal nama kosong dan harga negatif):
 
 ## 📖 Dokumentasi Interaktif (Swagger UI)
 
-Proyek ini telah dilengkapi dengan antarmuka web interaktif **Swagger UI (OpenAPI 3)**. Kamu bisa langsung melihat semua endpoint, skema request/response DTO, serta melakukan uji coba (klik tombol **"Try it out"**) langsung dari web browser tanpa aplikasi tambahan!
+Proyek ini telah dilengkapi dengan antarmuka web interaktif **Swagger UI (OpenAPI 3)** dengan fitur **Authorize Bearer JWT**. Kamu bisa langsung melihat semua endpoint, skema request/response DTO, serta melakukan uji coba langsung dari browser:
 
 * **URL Swagger UI**: `http://localhost:8080/swagger-ui.html`
 * **URL OpenAPI JSON**: `http://localhost:8080/api-docs`
+
+> **💡 Cara Otorisasi di Swagger UI:**
+> 1. Panggil endpoint `POST /api/auth/login` (atau `/register`) di Swagger UI.
+> 2. Salin nilai string `token` dari hasil respon JSON.
+> 3. Klik tombol hijau **Authorize 🔓** di pojok kanan atas Swagger UI.
+> 4. Tempel token ke dalam kotak input (tanpa perlu mengetik kata `Bearer `) lalu klik **Authorize**.
+> 5. Semua endpoint bertanda gembok kini bisa kamu uji langsung!
 
 ---
 
 ## 📑 File Pengujian Cepat (`api-test.http`)
 
 Proyek ini telah dilengkapi file pengujian siap pakai: [`api-test.http`](api-test.http).  
-Jika kamu menggunakan **Antigravity / VS Code** dengan ekstensi **REST Client**, kamu cukup membuka file tersebut dan menekan tombol **`Send Request`** untuk menguji setiap endpoint secara interaktif tanpa memerlukan Postman.
+Jika kamu menggunakan **Antigravity / VS Code** dengan ekstensi **REST Client**, kamu cukup membuka file tersebut dan menekan tombol **`Send Request`** untuk menguji setiap endpoint secara interaktif (termasuk penyimpanan token otomatis dari response login).
 
 ---
 
-## 🗺️ Roadmap Selanjutnya (Next Steps)
+## 🗺️ Status Pengembangan (Roadmap)
 
-Proyek ini sengaja dibuat tanpa autentikasi sebagai dasar pembelajaran CRUD. Tahap pengembangan berikutnya:
 - [x] Dokumentasi Interaktif menggunakan **Swagger / OpenAPI (springdoc-openapi)**.
-- [ ] Integrasi Autentikasi & Otorisasi (**Spring Security + JWT Token**).
-- [ ] Manajemen Akun & Hak Akses User/Admin (Role-Based Access Control).
+- [x] Relasi Antar Tabel Basis Data (**One-to-Many & Many-to-One: User & Product**).
+- [x] Integrasi Autentikasi & Otorisasi (**Spring Security 6 + Stateless JWT Token**).
+- [x] Pengurangan Boilerplate Code menggunakan **Project Lombok** (`@Getter`, `@Setter`, `@NoArgsConstructor`).
 - [ ] Penulisan Unit Test dan Integration Test (**JUnit 5 & Mockito / MockMvc**).
 - [ ] Containerization menggunakan **Docker & Docker Compose**.
 
