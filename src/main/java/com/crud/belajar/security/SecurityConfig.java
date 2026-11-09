@@ -52,15 +52,16 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/api-docs/**",
                                 "/swagger-resources/**",
-                                "/webjars/**"
-                        ).permitAll()
+                                "/webjars/**")
+                        .permitAll()
 
-                        // 3. GET Produk terbuka untuk umum (pengunjung web bisa lihat katalog tanpa login)
+                        // 3. GET Produk terbuka untuk umum (pengunjung web bisa lihat katalog tanpa
+                        // login)
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
 
-                        // 4. Semua aksi lainnya (POST, PUT, DELETE produk, dan manajemen User) butuh JWT
-                        .anyRequest().authenticated()
-                )
+                        // 4. Semua aksi lainnya (POST, PUT, DELETE produk, dan manajemen User) butuh
+                        // JWT
+                        .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
