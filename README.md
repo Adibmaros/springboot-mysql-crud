@@ -38,19 +38,23 @@ src/main/java/com/crud/belajar/
 │   └── ProductRepository.java     # Data Access Layer: Query JPA & pencarian (extends JpaRepository)
 │
 ├── dto/
-│   ├── ProductRequest.java        # Request Data Transfer Object dengan aturan validasi (@NotBlank, @Min, dll)
+│   ├── UserRequest.java           # Request DTO untuk validasi input User (@NotBlank, @Email)
+│   ├── ProductRequest.java        # Request DTO untuk validasi input Produk (@NotBlank, @Min, dll)
 │   └── ApiResponse.java           # Format respon API standar & konsisten (success, message, data, timestamp)
 │
 ├── service/
-│   └── ProductService.java        # Business Logic Layer: Pengolahan data sebelum disimpan/diambil
+│   ├── UserService.java           # Business Logic Layer: Pengolahan data User
+│   └── ProductService.java        # Business Logic Layer: Pengolahan data Produk
 │
 ├── controller/
-│   └── ProductController.java     # Presentation Layer: Menangani HTTP Request (GET, POST, PUT, DELETE)
+│   ├── UserController.java        # Presentation Layer: Endpoint CRUD User (/api/users)
+│   └── ProductController.java     # Presentation Layer: Endpoint CRUD Produk (/api/products)
 │
 ├── exception/
 │   └── GlobalExceptionHandler.java# Menangani error terpusat (@RestControllerAdvice)
 │
 └── config/
+    ├── OpenApiConfig.java         # Konfigurasi kustom Swagger / OpenAPI Documentation
     └── DataSeeder.java            # Otomatis mengisi data awal jika database masih kosong (CommandLineRunner)
 ```
 

@@ -1,10 +1,47 @@
 ### ========================================================
-### PENGUJIAN API CRUD PRODUK (SPRING BOOT)
+### PENGUJIAN API CRUD PRODUK & USER (SPRING BOOT)
 ### Jika di Antigravity terpasang ekstensi "REST Client", 
 ### kamu bisa langsung klik tombol "Send Request" di atas setiap URL.
 ### ========================================================
 
 @baseUrl = http://localhost:8080/api/products
+@userUrl = http://localhost:8080/api/users
+
+### ========================================================
+### ENDPOINT USER
+### ========================================================
+
+### U1. Ambil Semua Data User (beserta list produk masing-masing)
+GET {{userUrl}}
+
+### U2. Ambil Detail User Berdasarkan ID
+GET {{userUrl}}/1
+
+### U3. Tambah User Baru
+POST {{userUrl}}
+Content-Type: application/json
+
+{
+  "name": "Sarah Connor",
+  "email": "sarah.connor@example.com"
+}
+
+### U4. Update User Berdasarkan ID
+PUT {{userUrl}}/1
+Content-Type: application/json
+
+{
+  "name": "John Doe (Updated)",
+  "email": "john.updated@example.com"
+}
+
+### U5. Hapus User Berdasarkan ID (Cascade menghapus produk miliknya)
+DELETE {{userUrl}}/1
+
+
+### ========================================================
+### ENDPOINT PRODUK
+### ========================================================
 
 ### 1. Ambil Semua Data Produk (Default: Halaman 1, 10 item)
 GET {{baseUrl}}
@@ -50,9 +87,9 @@ Content-Type: application/json
   "name": "Laptop Asus TUF Gaming A15 (Updated)",
   "price": 14999000.0,
   "stock": 12,
-  "description": "Spesifikasi di-upgrade ke RAM 16GB"
+  "description": "Spesifikasi di-upgrade ke RAM 16GB",
+  "userId": 1
 }
 
 ### 8. Hapus Produk Berdasarkan ID
 DELETE {{baseUrl}}/1
-

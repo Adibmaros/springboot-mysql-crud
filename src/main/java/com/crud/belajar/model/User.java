@@ -1,6 +1,6 @@
 package com.crud.belajar.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,9 +32,9 @@ public class User {
     private String email;
 
     // Relasi One-to-Many: 1 User punya banyak Produk
-    // @JsonIgnore mencegah loop tak terbatas (infinite recursion) saat diubah ke JSON
+    // @JsonIgnoreProperties("user") mencegah infinite recursion saat serialisasi JSON
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @JsonIgnoreProperties("user")
     private List<Product> products = new ArrayList<>();
 
     @CreatedDate
