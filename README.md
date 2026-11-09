@@ -16,6 +16,7 @@ Proyek ini telah menerapkan standar *best practices* arsitektur berlapis (*layer
   * **MySQL Driver**: Konektor JDBC untuk database MySQL.
   * **Validation (Hibernate Validator)**: Validasi data payload request menggunakan anotasi standar Java Bean Validation.
   * **Springdoc OpenAPI (Swagger UI)**: Dokumentasi interaktif dan visualisasi RESTful API berbasis browser.
+  * **Project Lombok**: Mengurangi *boilerplate code* (otomatis membuat *getter*, *setter*, dan *constructor* menggunakan anotasi).
 * **Build Tool**: Apache Maven (Maven Wrapper disertakan)
 
 ---
