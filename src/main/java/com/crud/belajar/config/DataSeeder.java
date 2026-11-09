@@ -28,22 +28,17 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // 1. Buat user dummy jika tabel users masih kosong
-        User defaultUser;
-        if (userRepository.count() == 0) {
-            defaultUser = new User(
-                    "John Doe",
-                    "john.doe@example.com",
-                    passwordEncoder.encode("password123"),
-                    "ROLE_ADMIN"
-            );
-            defaultUser = userRepository.save(defaultUser);
-            System.out.println(">> [DataSeeder] 1 data user dummy berhasil dimasukkan (email: john.doe@example.com / password: password123)");
-        } else {
-            defaultUser = userRepository.findAll().get(0);
-        }
+        // 1. Selalu pastikan akun default admin john.doe@example.com ada dan memiliki password hash BCrypt
+        User defaultUser = userRepository.findByEmail("john.doe@example.com")
+                .orElseGet(() -> new User("John Doe", "john.doe@example.com", passwordEncoder.encode("password123"), "ROLE_ADMIN"));
 
-        // 2. Isi data dummy produk dan hubungkan ke defaultUser
+        defaultUser.setName("John Doe");
+        defaultUser.setPassword(passwordEncoder.encode("password123"));
+        defaultUser.setRole("ROLE_ADMIN");
+        defaultUser = userRepository.save(defaultUser);
+        System.out.println(">> [DataSeeder] Akun admin siap: john.doe@example.com (password: password123)");
+
+        // 2. Isi data dummy produk jika masih kosong dan hubungkan ke defaultUser
         if (productRepository.count() == 0) {
             List<Product> dummyProducts = List.of(
                     new Product("Laptop Asus TUF Gaming", 14500000.0, 15, "Laptop gaming dengan prosesor Ryzen 7 dan RTX 3050", defaultUser),

@@ -8,19 +8,20 @@ Proyek ini telah menerapkan standar *best practices* arsitektur berlapis (*layer
 
 ## 🛠️ Tech Stack & Dependencies
 
-* **Java**: Versi 17
-* **Framework**: Spring Boot
-* **Security & Auth**: Spring Security 6 & JJWT (Java JSON Web Token)
-* **Dependencies**:
-  * **Spring Web**: Membangun RESTful API menggunakan arsitektur MVC.
-  * **Spring Security**: Kerangka keamanan dan kontrol akses tangguh.
-  * **JJWT (io.jsonwebtoken)**: Pembuatan, enkripsi, dan validasi stateless JWT token (HMAC-SHA256).
-  * **Spring Data JPA**: Mempermudah interaksi database menggunakan Hibernate ORM.
-  * **MySQL Driver**: Konektor JDBC untuk database MySQL.
-  * **Validation (Hibernate Validator)**: Validasi data payload request menggunakan anotasi standar Java Bean Validation.
-  * **Springdoc OpenAPI (Swagger UI)**: Dokumentasi interaktif dengan dukungan *Authorize Bearer JWT* berbasis browser.
-  * **Project Lombok**: Mengurangi *boilerplate code* (otomatis membuat *getter*, *setter*, dan *constructor* menggunakan anotasi).
-* **Build Tool**: Apache Maven (Maven Wrapper disertakan)
+Proyek ini dibangun menggunakan **Java 17** dan ekosistem **Spring Boot** dengan deretan dependensi produksi berikut:
+
+| Dependensi (Artifact) | Kategori | Fungsi & Peran dalam Aplikasi |
+| :--- | :--- | :--- |
+| **`spring-boot-starter-webmvc`** | Core Web Framework | Membangun RESTful API berbasis arsitektur MVC, menangani HTTP Request/Response, routing URL, dan menyediakan Embedded Apache Tomcat Server. |
+| **`spring-boot-starter-data-jpa`** | Database / ORM | Mengelola persistensi data dan interaksi database tanpa query manual melalui Hibernate ORM dan interface `JpaRepository`. |
+| **`spring-boot-starter-security`** | Keamanan / Auth | Kerangka keamanan terpusat untuk autentikasi user, proteksi endpoint, enkripsi password (BCrypt), dan pengaturan filter request. |
+| **`jjwt-api` / `jjwt-impl` / `jjwt-jackson`** | Keamanan / Token | Pustaka pembuatan, penandatanganan digital (*digital signature* HMAC-SHA256), dan validasi token stateless JSON Web Token (JWT). |
+| **`mysql-connector-j`** | Driver Database | Driver JDBC resmi MySQL untuk menjembatani komunikasi data antara aplikasi Java dengan server MySQL (port 3306). |
+| **`flyway-core` & `flyway-mysql`** | Database Migration | Manajemen versi struktur database (*Database Migration / Version Control*). Menjalankan skrip SQL berurut (`V1__`, `V2__`) dan melacak riwayat perubahan skema. |
+| **`spring-boot-starter-validation`** | Validasi Input | Memvalidasi integritas data payload request JSON menggunakan anotasi standar Java Bean Validation (`@NotBlank`, `@Email`, `@Min`, `@NotNull`). |
+| **`springdoc-openapi-starter-webmvc-ui`** | Dokumentasi API | Meng-generate visualisasi dokumentasi interaktif Swagger UI (OpenAPI 3) berbasis browser dengan dukungan *Authorize Bearer JWT*. |
+| **`lombok`** | Developer Tool | Menghilangkan penulisan kode berulang (*boilerplate code*) dengan men-generate otomatis getter, setter, dan constructor pada tahap kompilasi. |
+| **`spring-boot-starter-test`** | Pengujian | Framework pengujian unit dan integrasi (JUnit 5, Mockito, Spring TestContext). |
 
 ---
 
@@ -71,6 +72,12 @@ src/main/java/com/crud/belajar/
 └── config/
     ├── OpenApiConfig.java         # Konfigurasi Swagger UI dengan tombol "Authorize" Bearer JWT
     └── DataSeeder.java            # Otomatis mengisi akun admin & 5 produk dummy jika database kosong
+
+src/main/resources/
+├── application.properties         # Konfigurasi MySQL, Hibernate (validate), Flyway, dan JWT
+└── db/migration/
+    ├── V1__create_users_table.sql    # Skrip SQL Flyway: pembuatan tabel 'users'
+    └── V2__create_products_table.sql # Skrip SQL Flyway: pembuatan tabel 'products' & foreign key user_id
 ```
 
 ---
@@ -106,6 +113,9 @@ src/main/java/com/crud/belajar/
    * Password di-hash menggunakan algoritma **BCrypt**.
    * Endpoint katalog produk (GET) tetap terbuka untuk publik.
    * Swagger UI dilengkapi tombol **Authorize** untuk menguji endpoint ber-token langsung dari browser.
+11. **Database Migration Berversi (Flyway)**:
+   * Struktur dan perubahan skema database dikelola melalui skrip SQL terversi (`V1__...`, `V2__...`).
+   * Hibernate disetel ke mode `validate`, mencegah manipulasi skema liar dan memastikan kepatuhan standar *production*.
 
 ---
 
@@ -304,6 +314,7 @@ Jika kamu menggunakan **Antigravity / VS Code** dengan ekstensi **REST Client**,
 - [x] Relasi Antar Tabel Basis Data (**One-to-Many & Many-to-One: User & Product**).
 - [x] Integrasi Autentikasi & Otorisasi (**Spring Security 6 + Stateless JWT Token**).
 - [x] Pengurangan Boilerplate Code menggunakan **Project Lombok** (`@Getter`, `@Setter`, `@NoArgsConstructor`).
+- [x] Manajemen Skema Basis Data Berversi (**Flyway Database Migration**).
 - [ ] Penulisan Unit Test dan Integration Test (**JUnit 5 & Mockito / MockMvc**).
 - [ ] Containerization menggunakan **Docker & Docker Compose**.
 
