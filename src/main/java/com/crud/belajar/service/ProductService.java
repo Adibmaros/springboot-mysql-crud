@@ -39,7 +39,8 @@ public class ProductService {
     // 2. Ambil 1 produk berdasarkan ID
     public Product getProductById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produk dengan ID " + id + " tidak ditemukan"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Produk dengan ID " + id + " tidak ditemukan"));
     }
 
     // 3. Tambah produk baru
@@ -53,7 +54,8 @@ public class ProductService {
         // Hubungkan ke User jika userId dikirimkan
         if (request.getUserId() != null) {
             User user = userRepository.findById(request.getUserId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User dengan ID " + request.getUserId() + " tidak ditemukan"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "User dengan ID " + request.getUserId() + " tidak ditemukan"));
             product.setUser(user);
         }
 

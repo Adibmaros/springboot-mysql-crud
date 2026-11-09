@@ -1,8 +1,8 @@
 # 🚀 springboot-mysql-crud
 
-Proyek ini adalah contoh implementasi **RESTful API CRUD (Create, Read, Update, Delete)** produk yang sederhana, bersih, dan modular menggunakan **Spring Boot** dan **MySQL**, dibangun tanpa autentikasi sebagai pondasi awal belajar *backend development*. 
+Proyek ini adalah implementasi **RESTful API CRUD (Create, Read, Update, Delete) Produk dan Manajemen User** yang bersih, aman, dan modular menggunakan **Spring Boot**, **Spring Security**, **JWT (JSON Web Token)**, dan **MySQL**.
 
-Proyek ini telah menerapkan standar *best practices* arsitektur berlapis (*layered architecture*), penanganan error global (*global exception handling*), validasi input, paginasi, pencarian, dan *database seeding*.
+Proyek ini telah menerapkan standar *best practices* arsitektur berlapis (*layered architecture*), autentikasi berbasis token (*stateless JWT*), proteksi endpoint berbasis peran, relasi entitas basis data (*One-to-Many*), penanganan error global (*global exception handling*), validasi input, paginasi, pencarian, dan *database seeding*.
 
 ---
 
@@ -10,12 +10,15 @@ Proyek ini telah menerapkan standar *best practices* arsitektur berlapis (*layer
 
 * **Java**: Versi 17
 * **Framework**: Spring Boot
+* **Security & Auth**: Spring Security 6 & JJWT (Java JSON Web Token)
 * **Dependencies**:
   * **Spring Web**: Membangun RESTful API menggunakan arsitektur MVC.
+  * **Spring Security**: Kerangka keamanan dan kontrol akses tangguh.
+  * **JJWT (io.jsonwebtoken)**: Pembuatan, enkripsi, dan validasi stateless JWT token (HMAC-SHA256).
   * **Spring Data JPA**: Mempermudah interaksi database menggunakan Hibernate ORM.
   * **MySQL Driver**: Konektor JDBC untuk database MySQL.
   * **Validation (Hibernate Validator)**: Validasi data payload request menggunakan anotasi standar Java Bean Validation.
-  * **Springdoc OpenAPI (Swagger UI)**: Dokumentasi interaktif dan visualisasi RESTful API berbasis browser.
+  * **Springdoc OpenAPI (Swagger UI)**: Dokumentasi interaktif dengan dukungan *Authorize Bearer JWT* berbasis browser.
   * **Project Lombok**: Mengurangi *boilerplate code* (otomatis membuat *getter*, *setter*, dan *constructor* menggunakan anotasi).
 * **Build Tool**: Apache Maven (Maven Wrapper disertakan)
 
@@ -30,32 +33,44 @@ src/main/java/com/crud/belajar/
 ├── BelajarApplication.java        # Main class aplikasi (@SpringBootApplication, @EnableJpaAuditing)
 │
 ├── model/
-│   ├── User.java                  # Entity JPA: Pemetaan tabel 'users' (1 User punya banyak Produk)
-│   └── Product.java               # Entity JPA: Pemetaan tabel 'products' & relasi @ManyToOne ke User
+│   ├── User.java                  # Entity JPA: Tabel 'users' (password BCrypt, role, relasi @OneToMany)
+│   └── Product.java               # Entity JPA: Tabel 'products' & relasi @ManyToOne ke User
 │
 ├── repository/
 │   ├── UserRepository.java        # Data Access Layer untuk User
 │   └── ProductRepository.java     # Data Access Layer: Query JPA & pencarian (extends JpaRepository)
 │
+├── security/
+│   ├── SecurityConfig.java        # Konfigurasi filter security, CORS/CSRF disable, Stateless Session
+│   ├── JwtUtil.java               # Helper pembangkitan, ekstraksi, dan validasi token JWT
+│   ├── JwtAuthenticationFilter.java# Filter pencegat request untuk validasi Bearer Token
+│   ├── JwtAuthenticationEntryPoint.java# Handler kustom respon JSON 401 Unauthorized
+│   └── CustomUserDetailsService.java# Adaptor UserDetailsService untuk autentikasi User JPA
+│
 ├── dto/
-│   ├── UserRequest.java           # Request DTO untuk validasi input User (@NotBlank, @Email)
-│   ├── ProductRequest.java        # Request DTO untuk validasi input Produk (@NotBlank, @Min, dll)
-│   └── ApiResponse.java           # Format respon API standar & konsisten (success, message, data, timestamp)
+│   ├── RegisterRequest.java       # Request DTO untuk registrasi akun baru
+│   ├── LoginRequest.java          # Request DTO untuk login user
+│   ├── AuthResponse.java          # Response DTO berisi token JWT dan info akun
+│   ├── UserRequest.java           # Request DTO untuk manajemen User
+│   ├── ProductRequest.java        # Request DTO untuk produk (@NotBlank, @Min, userId)
+│   └── ApiResponse.java           # Format respon API standar & konsisten
 │
 ├── service/
-│   ├── UserService.java           # Business Logic Layer: Pengolahan data User
-│   └── ProductService.java        # Business Logic Layer: Pengolahan data Produk
+│   ├── AuthService.java           # Business Logic: Registrasi, login, dan validasi sesi
+│   ├── UserService.java           # Business Logic: Pengolahan data User & hash password
+│   └── ProductService.java        # Business Logic: Pengolahan data Produk
 │
 ├── controller/
-│   ├── UserController.java        # Presentation Layer: Endpoint CRUD User (/api/users)
-│   └── ProductController.java     # Presentation Layer: Endpoint CRUD Produk (/api/products)
+│   ├── AuthController.java        # Endpoint Autentikasi (/api/auth/register, /login, /me)
+│   ├── UserController.java        # Endpoint CRUD User (/api/users)
+│   └── ProductController.java     # Endpoint CRUD Produk (/api/products)
 │
 ├── exception/
 │   └── GlobalExceptionHandler.java# Menangani error terpusat (@RestControllerAdvice)
 │
 └── config/
-    ├── OpenApiConfig.java         # Konfigurasi kustom Swagger / OpenAPI Documentation
-    └── DataSeeder.java            # Otomatis mengisi data awal jika database masih kosong (CommandLineRunner)
+    ├── OpenApiConfig.java         # Konfigurasi Swagger UI dengan tombol "Authorize" Bearer JWT
+    └── DataSeeder.java            # Otomatis mengisi akun admin & 5 produk dummy jika database kosong
 ```
 
 ---
@@ -83,9 +98,23 @@ src/main/java/com/crud/belajar/
 7. **JPA Auditing**:
    * Kolom `createdAt` dan `updatedAt` otomatis terisi saat data dibuat atau dimodifikasi.
 8. **Automated Data Seeder**:
-   * Saat pertama kali dijalankan, sistem otomatis memasukkan 1 user dummy dan 5 data dummy produk yang saling terhubung jika database kosong.
+   * Saat pertama kali dijalankan, sistem otomatis memasukkan 1 akun admin default (`john.doe@example.com` / `password123`) dan 5 data dummy produk yang saling terhubung jika database kosong.
 9. **Relasi Database JPA (One-to-Many & Many-to-One)**:
    * Mengintegrasikan relasi antara entitas `User` dan `Product` (1 User dapat memiliki banyak Produk) menggunakan foreign key `user_id`.
+10. **Autentikasi & Otorisasi (Spring Security + JWT)**:
+   * Mengamankan endpoint write/update/delete menggunakan token JSON Web Token (`Bearer <token>`).
+   * Password di-hash menggunakan algoritma **BCrypt**.
+   * Endpoint katalog produk (GET) tetap terbuka untuk publik.
+   * Swagger UI dilengkapi tombol **Authorize** untuk menguji endpoint ber-token langsung dari browser.
+
+---
+
+## 🔑 Akun Default (Seeder)
+
+Setelah aplikasi pertama kali dijalankan, kamu dapat langsung login menggunakan akun seeder berikut:
+* **Email**: `john.doe@example.com`
+* **Password**: `password123`
+* **Role**: `ROLE_ADMIN`
 
 ---
 

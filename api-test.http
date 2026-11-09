@@ -1,62 +1,105 @@
 ### ========================================================
-### PENGUJIAN API CRUD PRODUK & USER (SPRING BOOT)
+### PENGUJIAN RESTful API CRUD PRODUK & USER (SPRING BOOT + JWT)
 ### Jika di Antigravity terpasang ekstensi "REST Client", 
 ### kamu bisa langsung klik tombol "Send Request" di atas setiap URL.
 ### ========================================================
 
 @baseUrl = http://localhost:8080/api/products
 @userUrl = http://localhost:8080/api/users
+@authUrl = http://localhost:8080/api/auth
 
 ### ========================================================
-### ENDPOINT USER
+### 1. AUTENTIKASI (JWT)
+### ========================================================
+
+### A1. Registrasi User Baru
+# @name registerUser
+POST {{authUrl}}/register
+Content-Type: application/json
+
+{
+  "name": "Adib Maros",
+  "email": "adib@example.com",
+  "password": "password123"
+}
+
+### A2. Login User (Default Seeder: john.doe@example.com / password123)
+# @name loginUser
+POST {{authUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com",
+  "password": "password123"
+}
+
+### Simpan token dari respon login di atas:
+@token = {{loginUser.response.body.data.token}}
+
+### A3. Ambil Profil User yang Sedang Login (Protected - Perlu JWT)
+GET {{authUrl}}/me
+Authorization: Bearer {{token}}
+
+
+### ========================================================
+### 2. ENDPOINT USER (Protected - Memerlukan Token JWT)
 ### ========================================================
 
 ### U1. Ambil Semua Data User (beserta list produk masing-masing)
 GET {{userUrl}}
+Authorization: Bearer {{token}}
 
 ### U2. Ambil Detail User Berdasarkan ID
 GET {{userUrl}}/1
+Authorization: Bearer {{token}}
 
-### U3. Tambah User Baru
+### U3. Tambah User Baru Lewat Admin
 POST {{userUrl}}
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "name": "Sarah Connor",
-  "email": "sarah.connor@example.com"
+  "email": "sarah.connor@example.com",
+  "password": "password123",
+  "role": "ROLE_USER"
 }
 
 ### U4. Update User Berdasarkan ID
 PUT {{userUrl}}/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "name": "John Doe (Updated)",
-  "email": "john.updated@example.com"
+  "email": "john.updated@example.com",
+  "password": "newpassword123"
 }
 
 ### U5. Hapus User Berdasarkan ID (Cascade menghapus produk miliknya)
 DELETE {{userUrl}}/1
+Authorization: Bearer {{token}}
 
 
 ### ========================================================
-### ENDPOINT PRODUK
+### 3. ENDPOINT PRODUK
 ### ========================================================
 
-### 1. Ambil Semua Data Produk (Default: Halaman 1, 10 item)
+### P1. Ambil Semua Data Produk (PUBLIC - Tanpa Login / Tanpa Token)
 GET {{baseUrl}}
 
-### 2. Ambil Data dengan Fitur Pencarian (Search by Name)
+### P2. Ambil Data dengan Fitur Pencarian (PUBLIC)
 GET {{baseUrl}}?search=macbook
 
-### 3. Ambil Data dengan Pagination & Sorting (Harga Termahal ke Termurah)
+### P3. Ambil Data dengan Pagination & Sorting (PUBLIC)
 GET {{baseUrl}}?page=0&size=2&sortBy=price&sortDir=desc
 
-### 4. Ambil Detail 1 Produk Berdasarkan ID
+### P4. Ambil Detail 1 Produk Berdasarkan ID (PUBLIC)
 GET {{baseUrl}}/1
 
-### 5. Tambah Produk Baru (Berhasil / Valid terhubung ke User)
+### P5. Tambah Produk Baru (PROTECTED - Perlu Token JWT)
 POST {{baseUrl}}
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -67,9 +110,9 @@ Content-Type: application/json
   "userId": 1
 }
 
-### 6. Uji Coba Error Validasi (Nama kosong & Harga negatif)
-### Harusnya mengembalikan status 400 Bad Request dengan pesan error rapi
+### P6. Uji Coba Error Validasi (Nama kosong & Harga negatif)
 POST {{baseUrl}}
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -79,8 +122,9 @@ Content-Type: application/json
   "description": "Testing validasi gagal"
 }
 
-### 7. Update Produk Berdasarkan ID
+### P7. Update Produk Berdasarkan ID (PROTECTED - Perlu Token JWT)
 PUT {{baseUrl}}/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -91,5 +135,6 @@ Content-Type: application/json
   "userId": 1
 }
 
-### 8. Hapus Produk Berdasarkan ID
+### P8. Hapus Produk Berdasarkan ID (PROTECTED - Perlu Token JWT)
 DELETE {{baseUrl}}/1
+Authorization: Bearer {{token}}

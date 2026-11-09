@@ -4,6 +4,7 @@ import com.crud.belajar.dto.UserRequest;
 import com.crud.belajar.model.User;
 import com.crud.belajar.repository.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -13,9 +14,11 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // 1. Ambil semua user
@@ -35,7 +38,16 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email " + request.getEmail() + " sudah terdaftar");
         });
 
-        User user = new User(request.getName(), request.getEmail());
+        String rawPassword = (request.getPassword() != null && !request.getPassword().isBlank()) 
+                ? request.getPassword() 
+                : "password123";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+
+        String role = (request.getRole() != null && !request.getRole().isBlank()) 
+                ? request.getRole() 
+                : "ROLE_USER";
+
+        User user = new User(request.getName(), request.getEmail(), encodedPassword, role);
         return userRepository.save(user);
     }
 
@@ -51,6 +63,15 @@ public class UserService {
 
         user.setName(request.getName());
         user.setEmail(request.getEmail());
+
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+
+        if (request.getRole() != null && !request.getRole().isBlank()) {
+            user.setRole(request.getRole());
+        }
+
         return userRepository.save(user);
     }
 

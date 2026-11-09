@@ -5,6 +5,7 @@ import com.crud.belajar.model.User;
 import com.crud.belajar.repository.ProductRepository;
 import com.crud.belajar.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,10 +15,15 @@ public class DataSeeder implements CommandLineRunner {
 
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DataSeeder(ProductRepository productRepository, UserRepository userRepository) {
+    public DataSeeder(
+            ProductRepository productRepository,
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder) {
         this.productRepository = productRepository;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -25,9 +31,14 @@ public class DataSeeder implements CommandLineRunner {
         // 1. Buat user dummy jika tabel users masih kosong
         User defaultUser;
         if (userRepository.count() == 0) {
-            defaultUser = new User("John Doe", "john.doe@example.com");
+            defaultUser = new User(
+                    "John Doe",
+                    "john.doe@example.com",
+                    passwordEncoder.encode("password123"),
+                    "ROLE_ADMIN"
+            );
             defaultUser = userRepository.save(defaultUser);
-            System.out.println(">> [DataSeeder] 1 data user dummy berhasil dimasukkan ke database: " + defaultUser.getEmail());
+            System.out.println(">> [DataSeeder] 1 data user dummy berhasil dimasukkan (email: john.doe@example.com / password: password123)");
         } else {
             defaultUser = userRepository.findAll().get(0);
         }

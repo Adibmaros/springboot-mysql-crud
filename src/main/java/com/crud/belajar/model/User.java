@@ -1,6 +1,7 @@
 package com.crud.belajar.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,15 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    // Kolom password terenkripsi (BCrypt)
+    // WRITE_ONLY: password tidak akan pernah bocor ke response JSON
+    @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
+
+    @Column(nullable = false)
+    private String role = "ROLE_USER";
+
     // Relasi One-to-Many: 1 User punya banyak Produk
     // @JsonIgnoreProperties("user") mencegah infinite recursion saat serialisasi JSON
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -45,8 +55,17 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    public User(String name, String email) {
+    public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
+        this.password = password;
+        this.role = "ROLE_USER";
+    }
+
+    public User(String name, String email, String password, String role) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role != null ? role : "ROLE_USER";
     }
 }

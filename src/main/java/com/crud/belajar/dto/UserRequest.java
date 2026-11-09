@@ -23,4 +23,10 @@ public class UserRequest {
     @Email(message = "Format email tidak valid")
     @Schema(description = "Alamat email unik user", example = "jane.doe@example.com")
     private String email;
+
+    @Schema(description = "Kata sandi akun (opsional saat update)", example = "password123")
+    private String password;
+
+    @Schema(description = "Role pengguna (default: ROLE_USER)", example = "ROLE_USER")
+    private String role;
 }
