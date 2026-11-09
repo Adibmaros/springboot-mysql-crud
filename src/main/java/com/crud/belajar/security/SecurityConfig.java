@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // 1. Endpoint Autentikasi (Register, Login) terbuka untuk umum
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
 
                         // 2. Swagger / OpenAPI Documentation terbuka untuk umum
                         .requestMatchers(

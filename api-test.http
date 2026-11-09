@@ -1,12 +1,16 @@
 ### ========================================================
 ### PENGUJIAN RESTful API CRUD PRODUK & USER (SPRING BOOT + JWT)
-### Jika di Antigravity terpasang ekstensi "REST Client", 
+### Jika di Antigravity / VS Code terpasang ekstensi "REST Client", 
 ### kamu bisa langsung klik tombol "Send Request" di atas setiap URL.
 ### ========================================================
 
 @baseUrl = http://localhost:8080/api/products
 @userUrl = http://localhost:8080/api/users
 @authUrl = http://localhost:8080/api/auth
+
+# Token otomatis diambil dari respon login request # @name loginUser di bawah
+@authToken = {{loginUser.response.body.data.token}}
+
 
 ### ========================================================
 ### 1. AUTENTIKASI (JWT)
@@ -23,7 +27,8 @@ Content-Type: application/json
   "password": "password123"
 }
 
-### A2. Login User (Default Seeder: john.doe@example.com / password123)
+### A2. Login User (KLIK SEND REQUEST INI TERLEBIH DAHULU!)
+### Default seeder: john.doe@example.com / password123
 # @name loginUser
 POST {{authUrl}}/login
 Content-Type: application/json
@@ -33,12 +38,9 @@ Content-Type: application/json
   "password": "password123"
 }
 
-### Simpan token dari respon login di atas:
-@token = {{loginUser.response.body.data.token}}
-
 ### A3. Ambil Profil User yang Sedang Login (Protected - Perlu JWT)
 GET {{authUrl}}/me
-Authorization: Bearer {{token}}
+Authorization: Bearer {{loginUser.response.body.data.token}}
 
 
 ### ========================================================
@@ -47,15 +49,15 @@ Authorization: Bearer {{token}}
 
 ### U1. Ambil Semua Data User (beserta list produk masing-masing)
 GET {{userUrl}}
-Authorization: Bearer {{token}}
+Authorization: Bearer {{loginUser.response.body.data.token}}
 
 ### U2. Ambil Detail User Berdasarkan ID
 GET {{userUrl}}/1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{loginUser.response.body.data.token}}
 
 ### U3. Tambah User Baru Lewat Admin
 POST {{userUrl}}
-Authorization: Bearer {{token}}
+Authorization: Bearer {{loginUser.response.body.data.token}}
 Content-Type: application/json
 
 {
@@ -67,7 +69,7 @@ Content-Type: application/json
 
 ### U4. Update User Berdasarkan ID
 PUT {{userUrl}}/1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{loginUser.response.body.data.token}}
 Content-Type: application/json
 
 {
@@ -78,7 +80,7 @@ Content-Type: application/json
 
 ### U5. Hapus User Berdasarkan ID (Cascade menghapus produk miliknya)
 DELETE {{userUrl}}/1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{loginUser.response.body.data.token}}
 
 
 ### ========================================================
@@ -99,7 +101,7 @@ GET {{baseUrl}}/1
 
 ### P5. Tambah Produk Baru (PROTECTED - Perlu Token JWT)
 POST {{baseUrl}}
-Authorization: Bearer {{token}}
+Authorization: Bearer {{loginUser.response.body.data.token}}
 Content-Type: application/json
 
 {
@@ -112,7 +114,7 @@ Content-Type: application/json
 
 ### P6. Uji Coba Error Validasi (Nama kosong & Harga negatif)
 POST {{baseUrl}}
-Authorization: Bearer {{token}}
+Authorization: Bearer {{loginUser.response.body.data.token}}
 Content-Type: application/json
 
 {
@@ -124,7 +126,7 @@ Content-Type: application/json
 
 ### P7. Update Produk Berdasarkan ID (PROTECTED - Perlu Token JWT)
 PUT {{baseUrl}}/1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{loginUser.response.body.data.token}}
 Content-Type: application/json
 
 {
@@ -137,4 +139,4 @@ Content-Type: application/json
 
 ### P8. Hapus Produk Berdasarkan ID (PROTECTED - Perlu Token JWT)
 DELETE {{baseUrl}}/1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{loginUser.response.body.data.token}}
