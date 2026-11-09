@@ -324,13 +324,25 @@ Jika kamu menggunakan **Antigravity / VS Code** dengan ekstensi **REST Client**,
 
 ## 🗺️ Status Pengembangan (Roadmap)
 
-- [x] Dokumentasi Interaktif menggunakan **Swagger / OpenAPI (springdoc-openapi)**.
-- [x] Relasi Antar Tabel Basis Data (**One-to-Many & Many-to-One: User & Product**).
-- [x] Integrasi Autentikasi & Otorisasi (**Spring Security 6 + Stateless JWT Token**).
-- [x] Pengurangan Boilerplate Code menggunakan **Project Lombok** (`@Getter`, `@Setter`, `@NoArgsConstructor`).
-- [x] Manajemen Skema Basis Data Berversi (**Flyway Database Migration**).
-- [x] Observability & Health Check Monitoring (**Spring Boot Actuator**).
-- [x] Produktivitas Developer & Auto-Restart (**Spring Boot DevTools**).
-- [ ] Penulisan Unit Test dan Integration Test (**JUnit 5 & Mockito / MockMvc**).
-- [ ] Containerization menggunakan **Docker & Docker Compose**.
+### ✅ Milestone Selesai (Completed)
+- [x] **Dokumentasi Interaktif**: Integrasi Swagger UI (OpenAPI 3) dengan fitur *Authorize Bearer JWT*.
+- [x] **Relasi Antar Tabel Basis Data**: Pemetaan *One-to-Many* dan *Many-to-One* antara entitas `User` dan `Product`.
+- [x] **Autentikasi & Otorisasi**: Implementasi Spring Security 6 dan stateless JSON Web Token (JWT).
+- [x] **Pengurangan Boilerplate Code**: Pemanfaatan Project Lombok (`@Getter`, `@Setter`, `@NoArgsConstructor`).
+- [x] **Database Migration Berversi**: Manajemen skema database menggunakan Flyway (`V1__`, `V2__`) dan Hibernate mode `validate`.
+- [x] **Observability & Health Monitoring**: Pemantauan kesehatan server dan metrik memori menggunakan Spring Boot Actuator (`/health`, `/metrics`).
+- [x] **Developer Productivity**: Fitur auto-restart dan LiveReload menggunakan Spring Boot DevTools.
+
+### 🚀 Roadmap Selanjutnya (Next Milestones)
+1. **Tahap 1: Pengujian Otomatis (Automated Testing)**
+   - [ ] Unit Test pada lapisan Service menggunakan **JUnit 5** dan **Mockito**.
+   - [ ] Integration Test pada endpoint Controller menggunakan **MockMvc** dan `@WithMockUser`.
+2. **Tahap 2: Kontainerisasi & Lingkungan Mandiri (Docker & Docker Compose)**
+   - [ ] Pembuatan `Dockerfile` multi-stage untuk image Spring Boot yang efisien.
+   - [ ] Pembuatan `docker-compose.yml` untuk orkestrasi otomatis Spring Boot + MySQL.
+3. **Tahap 3: Caching, Performa & Otomasi CI/CD**
+   - [ ] Implementasi Caching katalog produk menggunakan **Spring Cache** (Redis / Caffeine).
+   - [ ] Otomasi Continuous Integration (CI) menggunakan **GitHub Actions** (`mvn clean test` on push).
+4. **Tahap 4: Proyek Hybrid Microservices (Spring Boot + Golang)**
+   - [ ] Arsitektur multi-layanan: Core Business & Transaksi (Spring Boot) + Real-time Notification / Streaming (Golang Gin/Fiber via WebSocket atau Message Broker).
 
